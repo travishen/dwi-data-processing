@@ -1,0 +1,30 @@
+version: '3.7'
+
+volumes:
+    db_data: {}
+
+services:
+  db:
+    container_name: db
+    image: postgres:12-alpine
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./dumps:/dumps
+      - ./dumps/0924:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+
+  app:
+    container_name: app
+    image: app
+    build:
+      context: ./src
+    volumes:
+      - ./src:/src
+      - ~/桌面/15-Kan-coa/15-Kan-coa:/data
+    env_file:
+      - .env
+    depends_on:
+      - db
